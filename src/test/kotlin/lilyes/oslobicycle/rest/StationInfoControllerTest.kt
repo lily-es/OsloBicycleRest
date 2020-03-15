@@ -104,5 +104,4 @@ class StationInfoControllerTest(
 
         mockMvc.perform(get("/info"))
     }
-
 }
