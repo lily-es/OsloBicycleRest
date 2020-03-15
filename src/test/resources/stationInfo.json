@@ -1,14 +1,15 @@
 {
   "last_updated": 1553592653,
   "data": {
-    "stations": [{
-      "station_id": "627",
-      "name": "Skøyen Stasjon",
-      "address": "Skøyen Stasjon",
-      "lat": 59.9226729,
-      "lon": 10.6788129,
-      "capacity": 20
-    },
+    "stations": [
+      {
+        "station_id": "627",
+        "name": "Skøyen Stasjon",
+        "address": "Skøyen Stasjon",
+        "lat": 59.9226729,
+        "lon": 10.6788129,
+        "capacity": 20
+      },
       {
         "station_id": "623",
         "name": "7 Juni Plassen",

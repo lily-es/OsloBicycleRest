@@ -2,10 +2,15 @@ package lilyes.oslobicycle.rest
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
@@ -13,14 +18,10 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers.*
-import org.springframework.test.web.client.response.MockRestResponseCreators.*
+import org.springframework.test.web.client.response.MockRestResponseCreators.withStatus
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebClient
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.client.RestTemplate
 
 @ActiveProfiles("test")
@@ -39,23 +40,23 @@ class StationInfoControllerTest(
     @Autowired
     private lateinit var mockMvc: MockMvc
 
-	@Autowired
+    @Autowired
     private lateinit var restTemplate: RestTemplate
 
-	@Autowired
-	private lateinit var objectMapper: ObjectMapper
+    @Autowired
+    private lateinit var objectMapper: ObjectMapper
 
-	private lateinit var mockServer: MockRestServiceServer
+    private lateinit var mockServer: MockRestServiceServer
 
-	@BeforeAll
-	fun setup(){
-		mockServer = MockRestServiceServer.createServer(restTemplate)
-	}
+    @BeforeAll
+    fun setup() {
+        mockServer = MockRestServiceServer.createServer(restTemplate)
+    }
 
-	@BeforeEach
-	fun resetMockServer(){
-		mockServer.reset()
-	}
+    @BeforeEach
+    fun resetMockServer() {
+        mockServer.reset()
+    }
 
     @Test
     fun `test endpoint returns correct data`() {
@@ -81,27 +82,27 @@ class StationInfoControllerTest(
         )
 
         val json = mockMvc.perform(get("/info"))
-				.andExpect(status().isOk)
-				.andReturn().response.contentAsString
+                .andExpect(status().isOk)
+                .andReturn().response.contentAsString
 
-		val result = objectMapper.readValue<List<Station>>(json)
-		assertEquals(stations, result)
+        val result = objectMapper.readValue<List<Station>>(json)
+        assertEquals(stations, result)
     }
 
     @Test
     fun `test endpoint errors correctly`() {
-		mockServer.expect(requestTo("$host/$statusUrl"))
-				.andExpect(method(HttpMethod.GET))
-				.andExpect(header("Client-Identifier", identifier))
-				.andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR))
+        mockServer.expect(requestTo("$host/$statusUrl"))
+                .andExpect(method(HttpMethod.GET))
+                .andExpect(header("Client-Identifier", identifier))
+                .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR))
 
-		mockServer.expect(requestTo("$host/$infoUrl"))
-				.andExpect(method(HttpMethod.GET))
-				.andExpect(header("Client-Identifier", identifier))
-				.andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR))
+        mockServer.expect(requestTo("$host/$infoUrl"))
+                .andExpect(method(HttpMethod.GET))
+                .andExpect(header("Client-Identifier", identifier))
+                .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR))
 
 
-		mockMvc.perform(get("/info"))
+        mockMvc.perform(get("/info"))
     }
 
 }

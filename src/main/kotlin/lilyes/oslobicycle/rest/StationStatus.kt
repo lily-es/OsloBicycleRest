@@ -20,7 +20,5 @@ data class StationStatus(val stationId: String,
             this(stationId = stationId,
                     numBikesAvailable = if (isRenting) numBikesAvailable else 0,
                     numDocksAvailable = if (isReturning) numDocksAvailable else 0,
-                    isInstalled = isInstalled) {
-
-    }
+                    isInstalled = isInstalled)
 }
