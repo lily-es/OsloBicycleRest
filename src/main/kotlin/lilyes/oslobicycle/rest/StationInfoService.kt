@@ -1,8 +1,8 @@
 package lilyes.oslobicycle.rest
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
@@ -19,7 +19,8 @@ class StationInfoService(
         @Value("\${application.bikeapi.status.url}") private val statusUrl: String,
         @Value("\${application.bikeapi.info.url}") private val infoUrl: String,
         @Value("\${application.identifier}") private val identifier: String,
-        private val restTemplate: RestTemplate
+        private val restTemplate: RestTemplate,
+        private val objectMapper: ObjectMapper
 ) {
 
     fun getStationInfo(): List<Station> {
@@ -56,7 +57,7 @@ class StationInfoService(
         val stations = mutableListOf<Station>()
 
         val stationNames = processStationNames(stationInfoJson)
-        val stationsStatus: List<StationStatus> = MAPPER.readValue(stationStatusJson.get("data").get("stations").toString())
+        val stationsStatus: List<StationStatus> = objectMapper.readValue(stationStatusJson.get("data").get("stations").toString())
 
         for (status: StationStatus in stationsStatus) {
             val name = stationNames[status.stationId] ?: continue//log this
@@ -75,10 +76,6 @@ class StationInfoService(
             stationNames[station.get("station_id").asText()] = station.get("name").asText()
         }
         return stationNames
-    }
-
-    companion object {
-        private val MAPPER = jacksonObjectMapper()
     }
 }
 
