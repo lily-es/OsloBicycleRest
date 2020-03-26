@@ -103,5 +103,6 @@ class StationInfoControllerTest(
 
 
         mockMvc.perform(get("/info"))
+                .andExpect(status().isInternalServerError)
     }
 }
