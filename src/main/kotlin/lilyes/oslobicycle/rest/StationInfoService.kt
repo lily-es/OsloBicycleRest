@@ -53,23 +53,23 @@ class StationInfoService(
 
     }
 
-    private fun processStations(stationInfoJson: ObjectNode, stationStatusJson: ObjectNode): List<Station> {
+    internal fun processStations(stationInfoJson: JsonNode, stationStatusJson: JsonNode): List<Station> {
         val stations = mutableListOf<Station>()
 
         val stationNames = processStationNames(stationInfoJson)
         val stationsStatus: List<StationStatus> = objectMapper.readValue(stationStatusJson.get("data").get("stations").toString())
 
         for (status: StationStatus in stationsStatus) {
-            val name = stationNames[status.stationId] ?: continue//log this
+            val stationName = stationNames[status.stationId] ?: continue//log this
             if (status.isInstalled) {
-                stations.add(Station(name, status.numBikesAvailable, status.numDocksAvailable))
+                stations.add(status.toStation(stationName))
             }
 
         }
         return stations
     }
 
-    private fun processStationNames(stationInfoJson: JsonNode): Map<String, String> {
+    internal fun processStationNames(stationInfoJson: JsonNode): Map<String, String> {
         val stationNames = mutableMapOf<String, String>()
         val stations = stationInfoJson.get("data").get("stations")
         for (station in stations) {

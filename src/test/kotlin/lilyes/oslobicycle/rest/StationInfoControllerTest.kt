@@ -90,7 +90,7 @@ class StationInfoControllerTest(
     }
 
     @Test
-    fun `test endpoint errors correctly`() {
+    fun `test endpoint returns status 500 when it cannot fetch the data`() {
         mockServer.expect(requestTo("$host/$statusUrl"))
                 .andExpect(method(HttpMethod.GET))
                 .andExpect(header("Client-Identifier", identifier))
