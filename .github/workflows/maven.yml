@@ -22,3 +22,5 @@ jobs:
           java-version: 1.11
       - name: Build with Maven
         run: mvn -B package --file pom.xml
+      - name: Deploy to github packages
+        run: mvn deploy -Dregistry=https://maven.pkg.github.com/lily-es -Dtoken=${{ secrets.GITHUB_TOKEN }}
